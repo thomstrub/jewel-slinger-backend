@@ -51,10 +51,8 @@ passport.serializeUser((user: any, done: any) => {
 // should only store ids
 passport.deserializeUser((id: any, done: any) => {
   User.findById(id, (err: Error, doc:any) => {
-    console.log(doc, "<------- doc from deserialize");
     return done(null, doc);
   })
-  
 })
 
 // ________________________________Google Strategy
@@ -82,23 +80,21 @@ passport.use(new GoogleStrategy({
         });
         await newUser.save();
         cb(null, newUser);
-        console.log("newUser saved<------")
       } else {
         cb(null, doc);
       }
     })
-    console.log(profile, "<---------profile--------")
     }
   ));
 
 // ________________________________Instagram Strategy
 
-passport.use(new InstagramStrategy({
-    clientID: `${process.env.INSTAGRAM_ID}`,
-    clientSecret: '${process.env.INSTAGRAM_SECRET}',
-    callbackURL: "/oauth2/redirect/instagram"
-  },
-  function(accessToken: any, refreshToken: any, profile: any, done: any) {
+// passport.use(new InstagramStrategy({
+//     clientID: `${process.env.INSTAGRAM_ID}`,
+//     clientSecret: '${process.env.INSTAGRAM_SECRET}',
+//     callbackURL: "/oauth2/redirect/instagram"
+//   },
+//   function(accessToken: any, refreshToken: any, profile: any, done: any) {
     // User.findOne({googleId: profile.id}, async (err: Error, doc: IUser) => {
     //   console.log("Mongo Function Firing!")
     //   if(err){
@@ -116,11 +112,11 @@ passport.use(new InstagramStrategy({
     //   }
     // })
     
-      console.log(profile, "<---------profile--------")
-    done(null, profile);
+//       console.log(profile, "<---------profile--------")
+//     done(null, profile);
       
-  }
-));
+//   }
+// ));
   
 // ________________________________Twitter Strategy
 
@@ -130,8 +126,6 @@ passport.use(new TwitterStrategy({
     callbackURL: "/oauth2/redirect/twitter"
   },
   function(token: any, tokenSecret: any, profile: any, cb: any) {
-    console.log(profile, "<---------profile--------")
-
     User.findOne({twitterId: profile.id}, async (err: Error, doc: any) => {
       console.log("Mongo Function Firing!")
       if(err){
@@ -202,14 +196,14 @@ function(req, res) {
 
 // --------- Insta
 
-app.get('/login/instagram', passport.authenticate('instagram', {scope: ['profile'] }));
+// app.get('/login/instagram', passport.authenticate('instagram', {scope: ['profile'] }));
 
-app.get('/oauth2/redirect/instagram', 
-  passport.authenticate('instagram', { failureRedirect: '/', failureMessage: true }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('http://localhost:3000');
-  });
+// app.get('/oauth2/redirect/instagram', 
+//   passport.authenticate('instagram', { failureRedirect: '/', failureMessage: true }),
+//   function(req, res) {
+//     // Successful authentication, redirect home.
+//     res.redirect('http://localhost:3000');
+//   });
 
 // -------- Twitter  
 app.get('/login/twitter', passport.authenticate('twitter'));
@@ -242,17 +236,6 @@ app.get("/getuser", (req, res) => {
   }
   
 })
-
-// app.get("/auth/logout", (req, res) => {
-//   req.logOut();
-//   if(req.user){
-    
-//     res.send("success");
-  
-//   }else {
-//     console.log(req, "<------- no user");
-//   }
-// })
 
 app.get('/auth/logout', function(req, res, next) {
   if(req.user){
