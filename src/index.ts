@@ -1,9 +1,17 @@
 import express, {Express, Request, Response} from 'express';
 import dotenv from 'dotenv';
+import mongoose, { ConnectOptions } from 'mongoose';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const InstagramStrategy = require('passport-instagram').Strategy;
+const TwitterStrategy = require('passport-twitter');
+const GitHubStrategy = require('passport-github');
 const cookieParser = require('cookie-parser');
+
+import User from './models/User';
+import {IUser, IMongoDBUser} from './types';
 
 dotenv.config();
 
@@ -16,13 +24,13 @@ require('./config/database');
 // Connection to Passport 
 require('./config/passport');
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-//require routes
-const authRoutes = require('./routes/auth');
-const oauth2CallbackRoutes = require('./routes/oauth2Callback');
-
+// mongoose.connect(`${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}${process.env.END_MONGODB}`, { 
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useCreateIndex: true
+// } as ConnectOptions, () => {
+//     console.log("Connected to mongoose successfully")
+// });
 
 app.use(express.json());
 app.use(cors({origin:"https://jewel-slinger.netlify.app", credentials: true}));
@@ -42,25 +50,163 @@ app.use(
     }
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
+// // should only store ids
+// passport.serializeUser((user: any, done: any) => {
+//   return done(null, user._id);
+// })
 
+// // should only store ids
+// passport.deserializeUser((id: any, done: any) => {
+//   User.findById(id, (err: Error, doc:any) => {
+//     return done(null, doc);
+//   })
+// })
+
+// // ________________________________Google Strategy
+// passport.use(new GoogleStrategy({
+//     clientID: `${process.env.CLIENT_ID}`,
+//     clientSecret: `${process.env.CLIENT_SECRET}`,
+//     callbackURL: '/oauth2/redirect/google',
+//     scope: [ 'profile' ],
+//     state: true
+//   },
+
+//   function verify(accessToken: any, refreshToken: any, profile: any, cb: any) {
+//     console.log("verify function running");
+//     User.findOne({googleId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
+//       console.log("Mongo Function Firing!")
+//       if(err){
+//         return cb(err, null);
+//       }
+//       console.log("No err!")
+//       if(!doc){
+//         //create a record
+//         const newUser = new User({
+//           googleId: profile.id,
+//           username: profile.displayName
+//         });
+//         await newUser.save();
+//         cb(null, newUser);
+//       } else {
+//         cb(null, doc);
+//       }
+//     })
+//     }
+//   ));
+
+// // ________________________________Instagram Strategy
+
+// // passport.use(new InstagramStrategy({
+// //     clientID: `${process.env.INSTAGRAM_ID}`,
+// //     clientSecret: '${process.env.INSTAGRAM_SECRET}',
+// //     callbackURL: "/oauth2/redirect/instagram"
+// //   },
+// //   function(accessToken: any, refreshToken: any, profile: any, done: any) {
+//     // User.findOne({googleId: profile.id}, async (err: Error, doc: IUser) => {
+//     //   console.log("Mongo Function Firing!")
+//     //   if(err){
+//     //     return done(err, null);
+//     //   }
+//     //   console.log("No err!")
+//     //   if(!doc){
+//     //     //create a record
+//     //     const newUser = new User({
+//     //       instagramId: profile.id,
+//     //       username: profile.displayName
+//     //     });
+//     //     await newUser.save();
+//     //     console.log("newUser saved<------")
+//     //   }
+//     // })
+    
+// //       console.log(profile, "<---------profile--------")
+// //     done(null, profile);
+      
+// //   }
+// // ));
+  
+// // ________________________________Twitter Strategy
+
+// passport.use(new TwitterStrategy({
+//     consumerKey: `${process.env.TWITTER_ID}`,
+//     consumerSecret: `${process.env.TWITTER_SECRET}`,
+//     callbackURL: "/oauth2/redirect/twitter"
+//   },
+//   function(token: any, tokenSecret: any, profile: any, cb: any) {
+//     User.findOne({twitterId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
+//       console.log("Mongo Function Firing!")
+//       if(err){
+//         return cb(err, null);
+//       }
+//       console.log("No err!")
+//       if(!doc){
+//         //create a record
+//         const newUser = new User({
+//          twitterId: profile.id,
+//           username: profile.displayName
+//         });
+//         await newUser.save();
+//         cb(null, newUser);
+//         console.log("newUser saved<------")
+//       } else {
+//         cb(null, doc);
+//       }
+//     })
+//   }
+// ));
+
+// // ________________________________GitHub Strategy
+// passport.use(new GitHubStrategy({
+//     clientID: `${process.env.GITHUB_ID}`,
+//     clientSecret: `${process.env.GITHUB_SECRET}`,
+//     callbackURL: "/oauth2/redirect/github",
+//     state: true
+//   },
+//   function(accessToke: any, refreshToken: any, profile: any, cb: any) {
+
+//     User.findOne({githubId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
+//       console.log("Mongo Function Firing!")
+//       if(err){
+//         return cb(err, null);
+//       }
+//       console.log("No err!")
+//       if(!doc){
+//         console.log("create user firing");
+//         //create a record
+//         const newUser = new User({
+//           githubId: profile.id,
+//           username: profile.displayName
+//         });
+//         await newUser.save();
+//         cb(null, newUser);
+//         console.log("newUser saved<------")
+//       } 
+//       console.log(doc, " <-------- doc");
+//       cb(null, doc);
+      
+//     })
+//   }
+// ));
 
 
 // ------------------------------------- ROUTES ------------------------
 
 // -------Google 
 
-// app.get('/auth/login/google', passport.authenticate('google', {scope: ['profile'] }));
+app.get('/login/google', passport.authenticate('google', {scope: ['profile'] }));
 
-// app.get('/oauth2/redirect/google',
-// passport.authenticate('google', { failureRedirect: '/', failureMessage: true }),
-// function(req, res) {
-//     res.redirect("https://jewel-slinger.netlify.app/");
-// });
+app.get('/oauth2/redirect/google',
+passport.authenticate('google', { failureRedirect: '/', failureMessage: true }),
+function(req, res) {
+    res.redirect("https://jewel-slinger.netlify.app/");
+});
 
 // --------- Insta
 
-// app.get('/auth/login/instagram', passport.authenticate('instagram', {scope: ['profile'] }));
+// app.get('/login/instagram', passport.authenticate('instagram', {scope: ['profile'] }));
 
 // app.get('/oauth2/redirect/instagram', 
 //   passport.authenticate('instagram', { failureRedirect: '/', failureMessage: true }),
@@ -70,52 +216,49 @@ app.use(
 //   });
 
 // -------- Twitter  
-// app.get('/auth/login/twitter', passport.authenticate('twitter'));
+app.get('/login/twitter', passport.authenticate('twitter'));
 
-// app.get('/oauth2/redirect/twitter', 
-//   passport.authenticate('twitter', { failureRedirect: '/', failureMessage: true }),
-//   function(req, res) {
-//       // Successful authentication, redirect home.
-//      res.redirect("https://jewel-slinger.netlify.app/");
-//   });
+app.get('/oauth2/redirect/twitter', 
+  passport.authenticate('twitter', { failureRedirect: '/', failureMessage: true }),
+  function(req, res) {
+      // Successful authentication, redirect home.
+     res.redirect("https://jewel-slinger.netlify.app/");
+  });
 
 // ------- GitHub  
 
-// app.get('/auth/login/github', passport.authenticate('github'));
+app.get('/login/github', passport.authenticate('github'));
 
-// app.get('/oauth2/redirect/github', 
-//   passport.authenticate('github', { failureRedirect: "https://jewel-slinger.netlify.app/", session: true , failureMessage: true }),
-//   function(req, res) {
-//     console.log("<--------callback from server github")
-//       // Successful authentication, redirect home.
-//      res.redirect("https://jewel-slinger.netlify.app/");
-//   });
+app.get('/oauth2/redirect/github', 
+  passport.authenticate('github', { failureRedirect: "https://jewel-slinger.netlify.app/", session: true , failureMessage: true }),
+  function(req, res) {
+    console.log("<--------callback from server github")
+      // Successful authentication, redirect home.
+     res.redirect("https://jewel-slinger.netlify.app/");
+  });
 
-// app.get("/auth/getuser", (req, res) => {
-//   // console.log(req, "req from context request");
-//   if(req.user){
-//     res.send(req.user);
-//   }else{
-//     console.log("no user from /getuser");
-//   }
+app.get("/getuser", (req, res) => {
+  // console.log(req, "req from context request");
+  if(req.user){
+    res.send(req.user);
+  }else{
+    console.log("no user from /getuser");
+  }
   
-// })
+})
 
-// app.get('/auth/logout', function(req, res, next) {
-//   if(req.user){
-//     console.log("logout route firing");
-//     req.logout(function(err) {
-//       if (err) { return next(err); }
-//       res.send("done");
-//     });
-//   } else {
-//     throw new Error("User previously logged out.");
-//   }
+app.get('/auth/logout', function(req, res, next) {
+  if(req.user){
+    console.log("logout route firing");
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.send("done");
+    });
+  } else {
+    throw new Error("User previously logged out.");
+  }
 
-// });
-
-app.use('/auth', authRoutes);
-app.use('./oauth2/redirect', oauth2CallbackRoutes);
+});
 
 app.get('/', (req, res) => {
     res.send('Hello f Internet');
