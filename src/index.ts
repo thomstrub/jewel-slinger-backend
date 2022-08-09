@@ -19,11 +19,6 @@ require('./config/passport');
 app.use(passport.initialize());
 app.use(passport.session());
 
-//require routes
-const authRoutes = require('./routes/auth');
-const oauth2CallbackRoutes = require('./routes/oauth2Callback');
-
-
 app.use(express.json());
 app.use(cors({origin:"https://jewel-slinger.netlify.app", credentials: true}));
 app.use(cookieParser());
@@ -43,6 +38,9 @@ app.use(
   })
 );
 
+//require routes
+const authRoutes = require('./routes/auth');
+const oauth2CallbackRoutes = require('./routes/oauth2Callback');
 
 
 
