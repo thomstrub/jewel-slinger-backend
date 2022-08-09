@@ -114,7 +114,7 @@ const oauth2CallbackRoutes = require('./routes/oauth2Callback');
 // });
 
 app.use('/auth', authRoutes);
-app.use('./oauth2/redirect', oauth2CallbackRoutes);
+app.use('/oauth2/redirect', oauth2CallbackRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello f Internet');
