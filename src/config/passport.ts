@@ -138,7 +138,7 @@ passport.serializeUser((user: any, done: any) => {
 });
   
 passport.deserializeUser((id: any, done: any) => {
-    User.findById(id, (err: Error, doc:IMongoDBUser) => {
+    User.findById(id, (err: Error, doc:any) => {
       return done(null, doc);
     })
 });
