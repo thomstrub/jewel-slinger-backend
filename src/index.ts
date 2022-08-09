@@ -16,9 +16,6 @@ require('./config/database');
 // Connection to Passport 
 require('./config/passport');
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.use(express.json());
 app.use(cors({origin:"https://jewel-slinger.netlify.app", credentials: true}));
 app.use(cookieParser());
@@ -37,6 +34,10 @@ app.use(
     }
   })
 );
+
+// passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
 
 //require routes
 const authRoutes = require('./routes/auth');
