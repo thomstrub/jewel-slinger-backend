@@ -13,6 +13,9 @@ const cookieParser = require('cookie-parser');
 import User from './User';
 import {IUser, IMongoDBUser} from './types';
 
+// update if using locally to localhost:3000
+const urlBase = "https://jewel-slinger.netlify.app/"
+
 dotenv.config();
 
 const app = express();
@@ -26,7 +29,7 @@ mongoose.connect(`${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${
 });
 
 app.use(express.json());
-app.use(cors({origin:"http://localhost:3000", credentials: true}));
+app.use(cors({origin:urlBase, credentials: true}));
 app.use(cookieParser());
 
 app.set("trust proxy", 1);
@@ -194,7 +197,7 @@ app.get('/login/google', passport.authenticate('google', {scope: ['profile'] }))
 app.get('/oauth2/redirect/google',
 passport.authenticate('google', { failureRedirect: '/', failureMessage: true }),
 function(req, res) {
-    res.redirect('http://localhost:3000');
+    res.redirect(urlBase);
 });
 
 // --------- Insta
@@ -205,7 +208,7 @@ function(req, res) {
 //   passport.authenticate('instagram', { failureRedirect: '/', failureMessage: true }),
 //   function(req, res) {
 //     // Successful authentication, redirect home.
-//     res.redirect('http://localhost:3000');
+//     res.redirect(urlBase);
 //   });
 
 // -------- Twitter  
@@ -215,7 +218,7 @@ app.get('/oauth2/redirect/twitter',
   passport.authenticate('twitter', { failureRedirect: '/', failureMessage: true }),
   function(req, res) {
       // Successful authentication, redirect home.
-     res.redirect('http://localhost:3000');
+     res.redirect(urlBase);
   });
 
 // ------- GitHub  
@@ -223,11 +226,11 @@ app.get('/oauth2/redirect/twitter',
 app.get('/login/github', passport.authenticate('github'));
 
 app.get('/oauth2/redirect/github', 
-  passport.authenticate('github', { failureRedirect: 'http://localhost:3000/', session: true , failureMessage: true }),
+  passport.authenticate('github', { failureRedirect: urlBase, session: true , failureMessage: true }),
   function(req, res) {
     console.log("<--------callback from server github")
       // Successful authentication, redirect home.
-     res.redirect('http://localhost:3000');
+     res.redirect(urlBase);
   });
 
 app.get("/getuser", (req, res) => {
