@@ -15,3 +15,5 @@ router.get('/login/twitter', passport.authenticate('twitter'));
 router.get('/login/google', passport.authenticate('google'));
 
 // app.get('/auth/login/instagram', passport.authenticate('instagram', {scope: ['profile'] }));
+
+module.exports = router;

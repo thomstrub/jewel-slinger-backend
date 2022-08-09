@@ -40,3 +40,5 @@ function(req: any, res: any) {
 //     // Successful authentication, redirect home.
 //     res.redirect("https://jewel-slinger.netlify.app/");
 //   });
+
+module.exports = router;
