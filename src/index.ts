@@ -26,7 +26,7 @@ mongoose.connect(`${process.env.START_MONGODB}${process.env.MONGODB_USERNAME}:${
 });
 
 app.use(express.json());
-app.use(cors({origin:"https://jewel-slinger.netlify.app/", credentials: true}));
+app.use(cors({origin:"https://jewel-slinger.netlify.app", credentials: true}));
 app.use(cookieParser());
 
 app.set("trust proxy", 1);
