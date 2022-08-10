@@ -15,6 +15,11 @@ function create (req: any, res: any){
         description: "Description",
         size: "3 feet, adjustable"
     })
+    console.log(item, " <------ item to be saved");
     // save item, get the ID
     // save the ID as an item on the User record
+}
+
+function index (req: any, res: any){
+    console.log('index firing');
 }
