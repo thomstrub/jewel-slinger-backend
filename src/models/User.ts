@@ -14,9 +14,13 @@ const user = new mongoose.Schema({
         type: String,
     },
     username:{
-        required: [true, "username required"],
+        required: [true, 'username required'],
         type: String
-    }
+    },
+    items:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Item'
+    }]
 })
 
 export default mongoose.model("User", user);

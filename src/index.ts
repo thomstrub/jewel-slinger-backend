@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
+
 const cookieParser = require('cookie-parser');
 
 dotenv.config();
@@ -19,7 +20,7 @@ require('./config/passport');
 //middleware
 
 app.use(express.json());
-app.use(cors({origin:"https://jewel-slinger.netlify.app", credentials: true}));
+app.use(cors({origin:["https://jewel-slinger.netlify.app", 'http://localhost:3000'], credentials: true}));
 app.use(cookieParser());
 
 app.set("trust proxy", 1);
@@ -46,6 +47,7 @@ app.use(passport.session());
 //require routes
 const authRoutes = require('./routes/auth');
 const oauth2CallbackRoutes = require('./routes/oauth2Callback');
+const itemsRoutes = require('./routes/items');
 
 
 
@@ -54,6 +56,8 @@ const oauth2CallbackRoutes = require('./routes/oauth2Callback');
 
 app.use('/auth', authRoutes);
 app.use('/oauth2/redirect', oauth2CallbackRoutes);
+
+app.use('/items',itemsRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello f Internet');

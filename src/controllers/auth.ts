@@ -4,7 +4,8 @@ import {IUser, IMongoDBUser} from '../types';
 module.exports = {
     isLoggedIn,
     logout,
-    getUser
+    getUser, 
+    sum
 }
 
 function isLoggedIn(req: any, res: any, next: any){
@@ -35,4 +36,8 @@ function logout(req:any, res:any, next:any) {
     }else{
       console.log("no user from /getuser");
     }
+  }
+
+  function sum(num1: number, num2: number){
+    return num1 + num2;
   }
