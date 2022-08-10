@@ -3,7 +3,8 @@ import Item from '../models/Item';
 import {IUser, IMongoDBUser, IItem} from '../types';
 
 module.exports = {
- create
+ create,
+ index
 }
 
 function create (req: any, res: any){
