@@ -12,4 +12,21 @@ export interface IMongoDBUser {
     username: string;
     _v: number;
     _id: string;
+    items?: {
+        name: String,
+        price?: String,
+        quantity?: Number,
+        photo?: String,
+        description?: String,
+        size?: String
+    }[]
+}
+
+export interface IItem {
+    name: String,
+    price?: String,
+    quantity?: Number,
+    photo?: String,
+    description?: String,
+    size?: String
 }
