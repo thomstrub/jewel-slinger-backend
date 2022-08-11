@@ -7,11 +7,13 @@ module.exports = {
  index
 }
 
-function create (req: any, res: any){
+async function create (req: any, res: any){
     console.log(req.body, ' <------- req.body');
     const item = new Item({...req.body});
+
     console.log(item, " <------ item to be saved");
-    res.send("Item created.")
+    const response = await item.save();
+    res.send(response, "<------- Item created.")
     // save item, get the ID
     // save the ID as an item on the User record
 }
