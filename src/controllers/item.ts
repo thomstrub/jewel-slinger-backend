@@ -8,15 +8,10 @@ module.exports = {
 }
 
 function create (req: any, res: any){
-    const item = new Item({
-        name: 'Thom',
-        price: '$10',
-        quantity: 1,
-        photo: "",
-        description: "Description",
-        size: "3 feet, adjustable"
-    })
+    console.log(req.body, ' <------- req.body');
+    const item = new Item({...req.body});
     console.log(item, " <------ item to be saved");
+    res.send("Item created.")
     // save item, get the ID
     // save the ID as an item on the User record
 }
