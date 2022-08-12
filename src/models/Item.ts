@@ -24,6 +24,10 @@ const item = new mongoose.Schema({
     size:{
         required: false,
         type: String
+    },
+    user:{
+        required: false,
+        type: String
     }
 })
 

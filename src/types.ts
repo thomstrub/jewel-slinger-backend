@@ -28,5 +28,6 @@ export interface IItem {
     quantity?: Number,
     photo?: String,
     description?: String,
-    size?: String
+    size?: String,
+    user?: String
 }
