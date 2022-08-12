@@ -23,9 +23,15 @@ async function create (req: any, res: any){
         }
     }  
 }
-    // save item, get the ID
-    // save the ID as an item on the User record
 
-function index (req: any, res: any){
+async function index (req: any, res: any){
     console.log('index firing');
+    try{
+        const items = await (Item.find({ }));
+        res.status(200).json({items});
+        console.log("mongo index success");
+    } catch (err: unknown){
+        console.log('MongoDB Error!');
+        res.status(400).send;
+    }
 }
