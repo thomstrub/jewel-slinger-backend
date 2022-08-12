@@ -13,10 +13,11 @@ async function create (req: any, res: any){
 
     console.log(item, " <------ item to be saved");
     const response = await item.save();
-    res.send(response, "<------- Item created.")
+    if(res.ok ) return res.json();
+    throw new Error('MongoDB Error!');
+}
     // save item, get the ID
     // save the ID as an item on the User record
-}
 
 function index (req: any, res: any){
     console.log('index firing');
