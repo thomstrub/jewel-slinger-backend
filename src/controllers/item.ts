@@ -10,17 +10,18 @@ module.exports = {
 async function create (req: any, res: any){
     console.log(req.body, ' <------- req.body');
     const item = new Item({...req.body});
-
-    console.log(item, " <------ item to be saved");
-    try{
-        const dbDoc = await item.save();;
-        res.status(201).json({post: dbDoc});
-    }
-    catch(err){
-        console.log(err);
-        res.json({data: err});
-    }
-    
+    if(req.user){
+        item.user = req.user._id;
+        console.log(item, " <------ item to be saved");
+        try{
+            const dbDoc = await item.save();;
+            res.status(201).json({post: dbDoc});
+        }
+        catch(err){
+            console.log(err);
+            res.json({data: err});
+        }
+    }  
 }
     // save item, get the ID
     // save the ID as an item on the User record
