@@ -12,9 +12,15 @@ async function create (req: any, res: any){
     const item = new Item({...req.body});
 
     console.log(item, " <------ item to be saved");
-    const response = await item.save();
-    if(res.ok ) return res.json();
-    throw new Error('MongoDB Error!');
+    try{
+        const dbDoc = await item.save();;
+        res.status(201).json({post: dbDoc});
+    }
+    catch(err){
+        console.log(err);
+        res.json({data: err});
+    }
+    
 }
     // save item, get the ID
     // save the ID as an item on the User record
