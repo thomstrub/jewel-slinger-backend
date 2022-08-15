@@ -16,7 +16,7 @@ passport.use(new GoogleStrategy({
     state: true
   },
 
-  function verify(accessToken: any, refreshToken: any, profile: any, cb: any) {
+  function verify(accessToken: any, refreshToken: any, profile: any, cb: (err: Error | null, obj: IMongoDBUser | IUser | null)=>void) {
     console.log("verify function running");
     User.findOne({googleId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
       console.log("Mongo Function Firing!")
