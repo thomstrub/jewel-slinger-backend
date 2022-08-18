@@ -4,7 +4,8 @@ import {IUser, IMongoDBUser, IItem} from '../types';
 
 module.exports = {
  create,
- index
+ index,
+ deleteOne
 }
 
 async function create (req: any, res: any){
@@ -34,4 +35,17 @@ async function index (req: any, res: any){
         console.log('MongoDB Error!');
         res.status(400).send;
     }
+}
+
+async function deleteOne (req: any, res: any){
+    try{
+    const deletedItem = await Item.findByIdAndRemove(req.params.id);
+    res.json({
+        status: 200,
+        data: deletedItem
+    })
+    } catch (err) {
+        res.send(err);
+    }
+    
 }
