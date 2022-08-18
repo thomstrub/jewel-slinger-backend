@@ -7,6 +7,9 @@ const GitHubStrategy = require('passport-github');
 import User from '../models/User';
 import {IUser, IMongoDBUser} from '../types';
 
+//type alias using union types
+type PassportCallback = (err: Error | null, obj: IMongoDBUser | IUser | null)=>void;
+
 // ________________________________Google Strategy
 passport.use(new GoogleStrategy({
     clientID: `${process.env.CLIENT_ID}`,
@@ -16,7 +19,7 @@ passport.use(new GoogleStrategy({
     state: true
   },
 
-  function verify(accessToken: any, refreshToken: any, profile: any, cb: (err: Error | null, obj: IMongoDBUser | IUser | null)=>void) {
+  function verify(accessToken: any, refreshToken: any, profile: any, cb: PassportCallback) {
     console.log("verify function running");
     User.findOne({googleId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
       console.log("Mongo Function Firing!")
@@ -77,7 +80,7 @@ passport.use(new TwitterStrategy({
     consumerSecret: `${process.env.TWITTER_SECRET}`,
     callbackURL: "/oauth2/redirect/twitter"
   },
-  function(token: any, tokenSecret: any, profile: any, cb: any) {
+  function(token: any, tokenSecret: any, profile: any, cb: PassportCallback) {
     User.findOne({twitterId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
       console.log("Mongo Function Firing!")
       if(err){
@@ -107,7 +110,7 @@ passport.use(new GitHubStrategy({
     callbackURL: "/oauth2/redirect/github",
     state: true
   },
-  function(accessToke: any, refreshToken: any, profile: any, cb: any) {
+  function(accessToke: any, refreshToken: any, profile: any, cb: PassportCallback) {
 
     User.findOne({githubId: profile.id}, async (err: Error, doc: IMongoDBUser) => {
       console.log("Mongo Function Firing!")
