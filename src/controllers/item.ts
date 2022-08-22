@@ -28,7 +28,7 @@ async function create (req: any, res: any){
 async function index (req: any, res: any){
     console.log('index firing');
     try{
-        const items = await (Item.find({ }));
+        const items = await (Item.find({ user: req.user._id }));
         res.status(200).json({items});
         console.log("mongo index success");
     } catch (err: unknown){
@@ -39,6 +39,7 @@ async function index (req: any, res: any){
 
 async function deleteOne (req: any, res: any){
     try{
+    console.log(req.params.id, " <-------req.params.id");
     const deletedItem = await Item.findByIdAndRemove(req.params.id);
     res.json({
         status: 200,
